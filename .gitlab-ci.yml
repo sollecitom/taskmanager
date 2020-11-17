@@ -1,0 +1,7 @@
+variables:
+  DISABLE_DEPLOY_FEATURE_BRANCH: "false"
+
+include:
+  - project: 'fameventuresltd/gitlab-templates'
+    ref: static-website
+    file: "pipelines/backend-jvm-generic.yml"

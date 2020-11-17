@@ -1,0 +1,18 @@
+micronaut:
+  application:
+    name: web-app-template
+  config-client:
+    enabled: true
+
+kubernetes:
+  client:
+    config-maps:
+      labels:
+        - app.kubernetes.io/name: web-app-template
+    secrets:
+      enabled: true
+      use-api: true
+      labels:
+        - app.kubernetes.io/name: web-app-template
+    discovery:
+      enabled: false

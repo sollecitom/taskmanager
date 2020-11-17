@@ -1,0 +1,34 @@
+app:
+  exposePort: 80
+  port: 8095
+  image:
+    name: "$DOCKER_IMAGE"
+    pullSecretsName: "$SECRET_NAME"
+
+ingress:
+  enabled: false
+  domainName: "$APP_NAME.$INTERNAL_BASE_DOMAIN"
+
+git:
+  commitSHA: "$CI_COMMIT_SHA"
+  commitRefName: "$CI_COMMIT_REF_NAME"
+
+iam:
+  enabled: true
+  role: "$POD_ROLE_ARN"
+
+resources:
+  cpu:
+    limit: "$CPU_LIMIT"
+    request: "$CPU_REQUEST"
+  memory:
+    limit: "$MEMORY_LIMIT"
+    request: "$MEMORY_REQUEST"
+
+autoscaling:
+  enabled: true
+  minReplicas: $MIN_REPLICAS
+  maxReplicas: $MAX_REPLICAS
+  target:
+    cpuUtilization: "$TARGET_CPU_UTILIZATION"
+    memoryUtilization: "$TARGET_MEMORY_UTILIZATION"

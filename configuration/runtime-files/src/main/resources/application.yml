@@ -1,0 +1,95 @@
+micronaut:
+  server:
+    port: ${indexlabs.webapp-template.server.port}
+  metrics:
+    enabled: ${indexlabs.webapp-template.server.management.metrics.enabled}
+    export:
+      prometheus:
+        enabled: ${indexlabs.webapp-template.server.management.endpoints.prometheus.enabled}
+        step: PT1M
+        descriptions: true
+grpc:
+  server:
+    port: ${random.port}
+
+endpoints:
+  all:
+    path: ${indexlabs.webapp-template.server.management.endpoints.all.path}
+    #    port: ${indexlabs.webapp-template.server.management.endpoints.all.port}
+    enabled: ${indexlabs.webapp-template.server.management.endpoints.all.enabled}
+    sensitive: ${indexlabs.webapp-template.server.management.endpoints.all.sensitive}
+  health:
+    enabled: ${indexlabs.webapp-template.server.management.endpoints.health.enabled}
+    sensitive: ${indexlabs.webapp-template.server.management.endpoints.health.sensitive}
+  readiness:
+    enabled: ${indexlabs.webapp-template.server.management.endpoints.readiness.enabled}
+    sensitive: ${indexlabs.webapp-template.server.management.endpoints.readiness.sensitive}
+  prometheus:
+    enabled: ${indexlabs.webapp-template.server.management.endpoints.prometheus.enabled}
+    sensitive: ${indexlabs.webapp-template.server.management.endpoints.prometheus.sensitive}
+
+indexlabs:
+  webapp-template:
+    server:
+      port: -1
+      base-path: "/api"
+      management:
+        metrics:
+          enabled: true
+          slos:
+            - 1ms
+            - 5ms
+            - 10ms
+            - 30ms
+            - 50ms
+            - 100ms
+            - 250ms
+            - 500ms
+            - 1s
+            - 5s
+            - 10s
+            - 20s
+            - 30s
+        endpoints:
+          all:
+            path: "/actuator"
+            enabled: false
+            sensitive: true
+          health:
+            enabled: true
+            sensitive: false
+          readiness:
+            enabled: true
+            sensitive: false
+          prometheus:
+            enabled: true
+            sensitive: false
+    repository:
+      mysql:
+        mode: "embedded"
+        database:
+          migrations:
+            runner:
+              enabled: true
+          operations:
+            timeout: 1m
+          connection:
+            uri:
+              target: "r2dbc:pool:mysql://localhost:3306/greetings"
+              options: "?"
+              value: ${indexlabs.webapp-template.repository.mysql.database.connection.uri.target}${indexlabs.webapp-template.repository.mysql.database.connection.uri.options}
+            authentication:
+              user: "root"
+              password: "admin"
+            timeout: 30s
+      in-memory:
+        greeting:
+          salutation: "Hi"
+    build:
+      revision:
+      timestamp:
+    logging:
+      slack:
+        enabled: false
+        webhook:
+          url:

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" shutdownHook="disable" packages="com.indexlabs.commons.logging.plugins">
+    <Properties>
+        <Property name="appenderToUse">stdout_${sys:WEB_APP_TEMPLATE_LOGGING_LAYOUT:-plain}</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="stdout_plain" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d [%p] [%t] %c – %m - %X%n"/>
+        </Console>
+        <Console name="stdout_json" target="SYSTEM_OUT">
+            <CustomJsonLayout/>
+        </Console>
+        <SlackAppender name="Slack" username="Kotlin Web App Template" channel="team-platform-alerts" enabledProperty="WEB_APP_TEMPLATE_LOGGING_SLACK_ENABLED" webHookUrlProperty="WEB_APP_TEMPLATE_LOGGING_SLACK_WEB_HOOK_URL">
+            <PatternLayout pattern="%d [%p] [%t] %c – %m - %X%n"/>
+        </SlackAppender>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="${appenderToUse}"/>
+            <AppenderRef ref="Slack" level="error"/>
+        </Root>
+        <!--        <Logger name="io.micronaut.runtime.Micronaut" level="warn" additivity="false">-->
+        <!--            <AppenderRef ref="${appenderToUse}"/>-->
+        <!--        </Logger>-->
+    </Loggers>
+</Configuration>

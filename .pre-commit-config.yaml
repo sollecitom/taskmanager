@@ -1,0 +1,40 @@
+# To install pre-commit hooks run:
+#   pip -q install pre-commit
+#   pre-commit install
+#   pre-commit autoupdate
+#   pre-commit run --all-files
+---
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v2.4.0
+  hooks:
+    - id: check-added-large-files
+      args: ['--maxkb=1024']
+#    - id: check-ast
+#    - id: check-byte-order-marker
+#    - id: check-case-conflict
+#    - id: check-executables-have-shebangs
+#    - id: check-merge-conflict
+#    - id: check-json
+#    - id: check-symlinks
+#    - id: check-xml
+#    - id: check-yaml
+#      args: [--allow-multiple-documents]
+#    - id: debug-statements
+    - id: detect-aws-credentials
+      args: [--allow-missing-credentials]
+    - id: detect-private-key
+#    - id: end-of-file-fixer
+#    - id: mixed-line-ending
+#      args: [--fix=no]
+#    - id: pretty-format-json
+#      args: [--autofix]
+#    - id: trailing-whitespace
+#      args: [--markdown-linebreak-ext=md]
+
+#- repo: git://github.com/antonbabenko/pre-commit-terraform
+#  rev: v1.21.0
+#  hooks:
+#    - id: terraform_fmt
+#    - id: terraform_docs
+#    - id: terraform_validate
