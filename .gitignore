@@ -1,0 +1,14 @@
+.DS_Store
+
+.idea
+.gradle
+local.gradle.properties
+
+**/.testcontainers-*
+
+**/build/*
+**/out/*
+
+*.iml
+
+*.log
