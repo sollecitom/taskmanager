@@ -1,4 +1,4 @@
-package sollecitom.taskmanager.domain.task
+package sollecitom.taskmanager.domain.event
 
 import kotlinx.coroutines.flow.Flow
 

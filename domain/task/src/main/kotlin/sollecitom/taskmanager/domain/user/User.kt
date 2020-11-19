@@ -1,7 +1,10 @@
-package sollecitom.taskmanager.domain.task
+package sollecitom.taskmanager.domain.user
 
 import com.indexlabs.commons.domain.identity.Id
 import com.indexlabs.commons.domain.identity.Identifiable
+import sollecitom.taskmanager.domain.product.Product
+import sollecitom.taskmanager.domain.task.Task
+import sollecitom.taskmanager.domain.task.TasksContainer
 
 interface User : Identifiable<Id> {
 

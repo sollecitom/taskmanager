@@ -1,6 +1,8 @@
-package sollecitom.taskmanager.domain.task
+package sollecitom.taskmanager.domain.product
 
 import com.indexlabs.commons.domain.identity.Id
+import sollecitom.taskmanager.domain.task.InMemoryTasksContainer
+import sollecitom.taskmanager.domain.task.TasksContainer
 import java.time.Instant
 
 class InMemoryProductsFactory : ProductsFactory {

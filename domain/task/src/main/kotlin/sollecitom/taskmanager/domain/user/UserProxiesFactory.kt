@@ -1,7 +1,10 @@
-package sollecitom.taskmanager.domain.task
+package sollecitom.taskmanager.domain.user
 
 import com.indexlabs.commons.domain.identity.Id
 import com.indexlabs.commons.domain.time.TimeProvider
+import sollecitom.taskmanager.domain.event.Event
+import sollecitom.taskmanager.domain.event.EventsStore
+import sollecitom.taskmanager.domain.product.ProductsFactory
 
 class UserProxiesFactory(private val productsFactory: ProductsFactory, private val eventsStore: EventsStore<Event>) : UsersFactory {
 

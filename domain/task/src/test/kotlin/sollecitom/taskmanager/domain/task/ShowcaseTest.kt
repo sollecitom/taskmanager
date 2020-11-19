@@ -13,9 +13,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toSet
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
-import sollecitom.taskmanager.domain.task.Event.ProductWasCreated
-import sollecitom.taskmanager.domain.task.Event.TaskWasAddedToContainer
-import sollecitom.taskmanager.domain.task.Event.TaskWasCreated
+import sollecitom.taskmanager.domain.common.time.DefaultTimeProvider
+import sollecitom.taskmanager.domain.event.Event
+import sollecitom.taskmanager.domain.event.InMemoryEventsStore
+import sollecitom.taskmanager.domain.product.InMemoryProductsFactory
+import sollecitom.taskmanager.domain.product.ProductWasCreated
+import sollecitom.taskmanager.domain.user.User
+import sollecitom.taskmanager.domain.user.UserProxiesFactory
 import java.time.Duration
 import java.time.Instant.now
 

@@ -1,4 +1,4 @@
-package sollecitom.taskmanager.domain.task
+package sollecitom.taskmanager.domain.product
 
 import com.indexlabs.commons.domain.identity.Id
 import java.time.Instant
