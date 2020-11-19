@@ -13,4 +13,6 @@ interface User : Identifiable<Id> {
     suspend fun createProduct(productId: Id = Id.create()): Product
 
     suspend fun add(task: Task, container: TasksContainer)
+
+    suspend fun remove(task: Task, container: TasksContainer)
 }

@@ -2,6 +2,7 @@ package sollecitom.taskmanager.domain.task
 
 import assertk.assertThat
 import assertk.assertions.contains
+import assertk.assertions.doesNotContain
 import assertk.assertions.isEqualTo
 import com.indexlabs.commons.domain.identity.Id
 import com.indexlabs.commons.domain.time.TimeProvider
@@ -40,6 +41,7 @@ private class ShowcaseTest {
         eventIsPublished.await(timeout).let { publishedEvent ->
             assertThat(publishedEvent.task).isEqualTo(task)
             assertThat(publishedEvent.actorId).isEqualTo(user.id)
+            assertThat(publishedEvent.timestamp).isEqualTo(timestamp)
         }
     }
 
@@ -57,13 +59,15 @@ private class ShowcaseTest {
         eventIsPublished.await(timeout).let { publishedEvent ->
             assertThat(publishedEvent.product).isEqualTo(product)
             assertThat(publishedEvent.actorId).isEqualTo(user.id)
+            assertThat(publishedEvent.timestamp).isEqualTo(timestamp)
         }
     }
 
     @Test
     fun `a user can add a task to the backlog of a product`() = runBlocking {
 
-        val user = newUser()
+        val timestamp = now()
+        val user = newUser { timestamp }
         val product = user.createProduct()
         val task = user.createTask()
         val eventIsPublished = async(start = CoroutineStart.UNDISPATCHED) { events.filterIsInstance<TaskWasAddedToContainer>().first() }
@@ -75,6 +79,28 @@ private class ShowcaseTest {
             assertThat(publishedEvent.task).isEqualTo(task)
             assertThat(publishedEvent.actorId).isEqualTo(user.id)
             assertThat(publishedEvent.container).isEqualTo(product)
+            assertThat(publishedEvent.timestamp).isEqualTo(timestamp)
+        }
+    }
+
+    @Test
+    fun `a user can remove a task from the backlog of a product`() = runBlocking {
+
+        val timestamp = now()
+        val user = newUser { timestamp }
+        val product = user.createProduct()
+        val task = user.createTask()
+        user.add(task, product)
+        val eventIsPublished = async(start = CoroutineStart.UNDISPATCHED) { events.filterIsInstance<TaskWasRemovedFromContainer>().first() }
+
+        user.remove(task, product)
+
+        assertThat(product.tasks.toSet()).doesNotContain(task)
+        eventIsPublished.await(timeout).let { publishedEvent ->
+            assertThat(publishedEvent.task).isEqualTo(task)
+            assertThat(publishedEvent.actorId).isEqualTo(user.id)
+            assertThat(publishedEvent.container).isEqualTo(product)
+            assertThat(publishedEvent.timestamp).isEqualTo(timestamp)
         }
     }
 

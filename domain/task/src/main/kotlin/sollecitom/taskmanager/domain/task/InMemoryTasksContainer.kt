@@ -11,8 +11,13 @@ class InMemoryTasksContainer : TasksContainer {
 
     override val tasks: Flow<Task> get() = storage.asFlow()
 
-    override fun addTask(task: Task, addedBy: Id, addedAt: Instant) {
+    override fun addTask(task: Task) {
 
         storage += task
+    }
+
+    override fun removeTask(task: Task) {
+
+        storage -= task
     }
 }
