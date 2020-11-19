@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toSet
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
+import sollecitom.taskmanager.domain.task.Event.ProductWasCreated
+import sollecitom.taskmanager.domain.task.Event.TaskWasAddedToContainer
+import sollecitom.taskmanager.domain.task.Event.TaskWasCreated
 import java.time.Duration
 import java.time.Instant.now
 
@@ -24,7 +27,7 @@ private class ShowcaseTest {
 
         val timestamp = now()
         val user = newUser { timestamp }
-        val eventIsPublished = async(start = CoroutineStart.UNDISPATCHED) { eventStore.events.filterIsInstance<Event.TaskWasCreated>().first() }
+        val eventIsPublished = async(start = CoroutineStart.UNDISPATCHED) { events.filterIsInstance<TaskWasCreated>().first() }
 
         val task = user.createTask()
 
@@ -41,7 +44,7 @@ private class ShowcaseTest {
 
         val timestamp = now()
         val user = newUser { timestamp }
-        val eventIsPublished = async(start = CoroutineStart.UNDISPATCHED) { eventStore.events.filterIsInstance<Event.ProductWasCreated>().first() }
+        val eventIsPublished = async(start = CoroutineStart.UNDISPATCHED) { events.filterIsInstance<ProductWasCreated>().first() }
 
         val product = user.createProduct()
 
@@ -59,7 +62,7 @@ private class ShowcaseTest {
         val user = newUser()
         val product = user.createProduct()
         val task = user.createTask()
-        val eventIsPublished = async(start = CoroutineStart.UNDISPATCHED) { eventStore.events.filterIsInstance<Event.TaskWasAddedToContainer>().first() }
+        val eventIsPublished = async(start = CoroutineStart.UNDISPATCHED) { events.filterIsInstance<TaskWasAddedToContainer>().first() }
 
         user.add(task, product)
 
@@ -85,6 +88,7 @@ private class ShowcaseTest {
 
     private val timeout = Duration.ofSeconds(5)
     private val eventStore = InMemoryEventsStore<Event>()
+    private val events = eventStore.events
     private val usersFactory = UserProxiesFactory(InMemoryProductsFactory(), eventStore)
 
     private suspend fun newUser(id: Id = Id.create(), time: TimeProvider = DefaultTimeProvider): User = usersFactory.create(id, time)
