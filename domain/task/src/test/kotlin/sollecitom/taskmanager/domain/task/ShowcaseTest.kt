@@ -2,6 +2,7 @@ package sollecitom.taskmanager.domain.task
 
 import assertk.assertThat
 import assertk.assertions.contains
+import assertk.assertions.containsOnly
 import assertk.assertions.doesNotContain
 import assertk.assertions.isEqualTo
 import com.indexlabs.commons.domain.identity.Id
@@ -19,6 +20,8 @@ import sollecitom.taskmanager.domain.event.Event
 import sollecitom.taskmanager.domain.event.InMemoryEventsStore
 import sollecitom.taskmanager.domain.product.InMemoryProductsFactory
 import sollecitom.taskmanager.domain.product.ProductWasCreated
+import sollecitom.taskmanager.domain.team.InMemoryTeamsFactory
+import sollecitom.taskmanager.domain.team.TeamWasCreated
 import sollecitom.taskmanager.domain.user.User
 import sollecitom.taskmanager.domain.user.UserProxiesFactory
 import java.time.Duration
@@ -104,10 +107,29 @@ private class ShowcaseTest {
         }
     }
 
+    @Test
+    fun `a user can create a team`() = runBlocking {
+
+        val timestamp = now()
+        val user = newUser { timestamp }
+        val eventIsPublished = async(start = CoroutineStart.UNDISPATCHED) { events.filterIsInstance<TeamWasCreated>().first() }
+
+        val team = user.createTeam()
+
+        assertThat(team.createdBy).isEqualTo(user.id)
+        assertThat(team.createdAt).isEqualTo(timestamp)
+        assertThat(team.membersIds.toSet()).containsOnly(user.id)
+        eventIsPublished.await(timeout).let { publishedEvent ->
+            assertThat(publishedEvent.team).isEqualTo(team)
+            assertThat(publishedEvent.actorId).isEqualTo(user.id)
+            assertThat(publishedEvent.timestamp).isEqualTo(timestamp)
+        }
+    }
+
     private val timeout = Duration.ofSeconds(5)
     private val eventStore = InMemoryEventsStore<Event>()
     private val events = eventStore.events
-    private val usersFactory = UserProxiesFactory(InMemoryProductsFactory(), eventStore)
+    private val usersFactory = UserProxiesFactory(InMemoryTasksFactory(), InMemoryProductsFactory(), InMemoryTeamsFactory(), eventStore)
 
     private suspend fun newUser(id: Id = Id.create(), time: TimeProvider = DefaultTimeProvider): User = usersFactory.create(id, time)
 }
