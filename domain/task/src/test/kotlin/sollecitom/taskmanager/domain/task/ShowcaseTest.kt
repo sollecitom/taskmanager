@@ -78,18 +78,6 @@ private class ShowcaseTest {
         }
     }
 
-    @Test
-    fun `a task can only appear in the backlog of a product once`() = runBlocking {
-
-        val user = newUser()
-        val product = user.createProduct()
-        val task = user.createTask()
-
-        user.add(task, product)
-
-        assertThat(product.tasks.toSet()).contains(task)
-    }
-
     private val timeout = Duration.ofSeconds(5)
     private val eventStore = InMemoryEventsStore<Event>()
     private val events = eventStore.events
