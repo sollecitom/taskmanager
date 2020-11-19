@@ -1,16 +1,6 @@
 object Versions {
     const val kotlin = "1.4.10"
     const val palantirGitPlugin = "0.12.3"
-    const val protocolBuffers = "3.13.0"
-    const val grpcVersion = "1.32.2"
-    const val protobufPlugin = "0.8.13"
-    const val grpcKotlinVersion = "0.2.0"
-    const val jibPlugin = "2.5.0"
-    internal const val indexlabsCommons = "1.5.0-SNAPSHOT"
-    internal const val micronaut = "2.0.1"
-    internal const val micronautTest = "1.2.2"
-    internal const val micronautCache = "2.0.0"
-    internal const val micronautPrometheus = "1.3.1"
-    internal const val micronautKubernetes = "2.0.0"
+    internal const val indexlabsCommons = "1.8.0-SNAPSHOT"
     internal const val log4j2 = "2.13.3"
 }

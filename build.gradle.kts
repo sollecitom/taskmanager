@@ -73,7 +73,7 @@ allprojects {
 
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions.apply {
-            allWarningsAsErrors = true
+            allWarningsAsErrors = false
             jvmTarget = "14"
             javaParameters = true
             freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
