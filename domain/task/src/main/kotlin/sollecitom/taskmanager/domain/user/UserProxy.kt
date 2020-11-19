@@ -17,6 +17,7 @@ import sollecitom.taskmanager.domain.team.Team
 import sollecitom.taskmanager.domain.team.TeamWasCreated
 import sollecitom.taskmanager.domain.team.TeamsFactory
 import sollecitom.taskmanager.domain.team.UserWasAddedToContainer
+import sollecitom.taskmanager.domain.team.UserWasRemovedFromContainer
 
 // TODO should publish event be part of the factories instead?
 internal class UserProxy(override val id: Id, private val time: TimeProvider, private val tasksFactory: TasksFactory, private val productsFactory: ProductsFactory, private val teamsFactory: TeamsFactory, private val publishEvent: suspend (Event) -> Unit) : User {
@@ -32,6 +33,8 @@ internal class UserProxy(override val id: Id, private val time: TimeProvider, pr
     override suspend fun createTeam(teamId: Id): Team = teamsFactory.create(teamId, id, getTime()).also { publishEvent(TeamWasCreated(it, getTime())) }
 
     override suspend fun add(user: User, container: MembersContainer) = container.addMemberId(user.id).also { publishEvent(UserWasAddedToContainer(user.id, container, id, getTime())) }
+
+    override suspend fun remove(user: User, container: MembersContainer) = container.removeMemberId(user.id).also { publishEvent(UserWasRemovedFromContainer(user.id, container, id, getTime())) }
 
     private fun getTime() = time.get()
 }

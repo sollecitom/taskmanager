@@ -21,4 +21,6 @@ interface User : Identifiable<Id> {
     suspend fun createTeam(teamId: Id = Id.create()): Team
 
     suspend fun add(user: User, container: MembersContainer)
+
+    suspend fun remove(user: User, container: MembersContainer)
 }

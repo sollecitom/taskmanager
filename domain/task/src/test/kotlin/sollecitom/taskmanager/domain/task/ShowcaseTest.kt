@@ -23,6 +23,7 @@ import sollecitom.taskmanager.domain.product.ProductWasCreated
 import sollecitom.taskmanager.domain.team.InMemoryTeamsFactory
 import sollecitom.taskmanager.domain.team.TeamWasCreated
 import sollecitom.taskmanager.domain.team.UserWasAddedToContainer
+import sollecitom.taskmanager.domain.team.UserWasRemovedFromContainer
 import sollecitom.taskmanager.domain.user.User
 import sollecitom.taskmanager.domain.user.UserProxiesFactory
 import java.time.Duration
@@ -138,13 +139,32 @@ private class ShowcaseTest {
 
         user.add(anotherUser, team)
 
-        assertThat(team.createdBy).isEqualTo(user.id)
-        assertThat(team.createdAt).isEqualTo(timestamp)
         assertThat(team.membersIds.toSet()).containsOnly(user.id, anotherUser.id)
         eventIsPublished.await(timeout).let { publishedEvent ->
             assertThat(publishedEvent.userId).isEqualTo(anotherUser.id)
             assertThat(publishedEvent.container).isEqualTo(team)
             assertThat(publishedEvent.actorId).isEqualTo(user.id)
+            assertThat(publishedEvent.timestamp).isEqualTo(timestamp)
+        }
+    }
+
+    @Test
+    fun `a user can remove another user from a team`() = runBlocking {
+
+        val timestamp = now()
+        val user = newUser { timestamp }
+        val anotherUser = newUser { timestamp }
+        val eventIsPublished = async(start = CoroutineStart.UNDISPATCHED) { events.filterIsInstance<UserWasRemovedFromContainer>().first() }
+        val team = user.createTeam()
+        user.add(anotherUser, team)
+
+        anotherUser.remove(user, team)
+
+        assertThat(team.membersIds.toSet()).containsOnly(anotherUser.id)
+        eventIsPublished.await(timeout).let { publishedEvent ->
+            assertThat(publishedEvent.userId).isEqualTo(user.id)
+            assertThat(publishedEvent.container).isEqualTo(team)
+            assertThat(publishedEvent.actorId).isEqualTo(anotherUser.id)
             assertThat(publishedEvent.timestamp).isEqualTo(timestamp)
         }
     }
