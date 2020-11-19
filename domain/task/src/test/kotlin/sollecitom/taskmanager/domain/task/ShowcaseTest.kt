@@ -22,6 +22,7 @@ import sollecitom.taskmanager.domain.product.InMemoryProductsFactory
 import sollecitom.taskmanager.domain.product.ProductWasCreated
 import sollecitom.taskmanager.domain.team.InMemoryTeamsFactory
 import sollecitom.taskmanager.domain.team.TeamWasCreated
+import sollecitom.taskmanager.domain.team.UserWasAddedToContainer
 import sollecitom.taskmanager.domain.user.User
 import sollecitom.taskmanager.domain.user.UserProxiesFactory
 import java.time.Duration
@@ -121,6 +122,28 @@ private class ShowcaseTest {
         assertThat(team.membersIds.toSet()).containsOnly(user.id)
         eventIsPublished.await(timeout).let { publishedEvent ->
             assertThat(publishedEvent.team).isEqualTo(team)
+            assertThat(publishedEvent.actorId).isEqualTo(user.id)
+            assertThat(publishedEvent.timestamp).isEqualTo(timestamp)
+        }
+    }
+
+    @Test
+    fun `a user can add another user to a team`() = runBlocking {
+
+        val timestamp = now()
+        val user = newUser { timestamp }
+        val anotherUser = newUser { timestamp }
+        val eventIsPublished = async(start = CoroutineStart.UNDISPATCHED) { events.filterIsInstance<UserWasAddedToContainer>().first() }
+        val team = user.createTeam()
+
+        user.add(anotherUser, team)
+
+        assertThat(team.createdBy).isEqualTo(user.id)
+        assertThat(team.createdAt).isEqualTo(timestamp)
+        assertThat(team.membersIds.toSet()).containsOnly(user.id, anotherUser.id)
+        eventIsPublished.await(timeout).let { publishedEvent ->
+            assertThat(publishedEvent.userId).isEqualTo(anotherUser.id)
+            assertThat(publishedEvent.container).isEqualTo(team)
             assertThat(publishedEvent.actorId).isEqualTo(user.id)
             assertThat(publishedEvent.timestamp).isEqualTo(timestamp)
         }

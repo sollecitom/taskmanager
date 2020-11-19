@@ -5,17 +5,16 @@ import kotlinx.coroutines.flow.asFlow
 
 class InMemoryTasksContainer : TasksContainer {
 
-    private val storage = mutableSetOf<Task>()
-
-    override val tasks: Flow<Task> get() = storage.asFlow()
+    private val _tasks = mutableSetOf<Task>()
+    override val tasks: Flow<Task> get() = _tasks.asFlow()
 
     override fun addTask(task: Task) {
 
-        storage += task
+        _tasks += task
     }
 
     override fun removeTask(task: Task) {
 
-        storage -= task
+        _tasks -= task
     }
 }

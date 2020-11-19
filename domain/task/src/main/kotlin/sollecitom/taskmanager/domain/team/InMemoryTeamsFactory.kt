@@ -5,5 +5,7 @@ import java.time.Instant
 
 class InMemoryTeamsFactory : TeamsFactory {
 
-    override suspend fun create(id: Id, createdBy: Id, createdAt: Instant): Team = TeamInfo(id, createdBy, createdAt)
+    override suspend fun create(id: Id, createdBy: Id, createdAt: Instant): Team = TeamInfo(id, createdBy, createdAt, newMembersContainer())
+
+    private fun newMembersContainer(): MembersContainer = InMemoryMembersContainer()
 }
