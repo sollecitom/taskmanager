@@ -3,7 +3,6 @@ package sollecitom.taskmanager.domain.user
 import com.indexlabs.commons.domain.identity.Id
 import com.indexlabs.commons.domain.time.TimeProvider
 import sollecitom.taskmanager.domain.event.Event
-import sollecitom.taskmanager.domain.event.EventsStore
 import sollecitom.taskmanager.domain.product.ProductsFactory
 import sollecitom.taskmanager.domain.task.TasksFactory
 import sollecitom.taskmanager.domain.team.TeamsFactory

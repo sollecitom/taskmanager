@@ -7,7 +7,7 @@ import java.time.Instant
 
 class InMemoryProductsFactory : ProductsFactory {
 
-    override suspend fun create(id: Id, createdBy: Id, createdAt: Instant): Product = ProductInfo(id, createdBy, createdAt, newTasksContainer())
+    override suspend fun create(id: Id, createdBy: Id, createdAt: Instant): Product = ProductInfo(createdBy, createdAt, newTasksContainer(id))
 
-    private fun newTasksContainer(): TasksContainer = InMemoryTasksContainer()
+    private fun newTasksContainer(id: Id): TasksContainer = InMemoryTasksContainer(id)
 }
