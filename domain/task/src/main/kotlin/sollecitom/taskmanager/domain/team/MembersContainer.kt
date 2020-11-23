@@ -7,7 +7,7 @@ interface MembersContainer {
 
     val membersIds: Flow<Id>
 
-    fun addMemberId(memberId: Id)
+    suspend fun addMemberId(memberId: Id)
 
-    fun removeMemberId(memberId: Id)
+    suspend fun removeMemberId(memberId: Id)
 }

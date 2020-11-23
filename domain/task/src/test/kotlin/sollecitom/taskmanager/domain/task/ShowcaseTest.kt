@@ -4,7 +4,10 @@ import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.containsOnly
 import assertk.assertions.doesNotContain
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
 import com.indexlabs.commons.domain.identity.Id
 import com.indexlabs.commons.domain.time.TimeProvider
 import kotlinx.coroutines.CoroutineStart
@@ -149,30 +152,28 @@ private class ShowcaseTest {
     }
 
     @Test
-    fun `a user can remove another user from a team`() = runBlocking {
+    fun `a team cannot exist without members`() = runBlocking {
 
+        val publishedEvents = mutableSetOf<Event>()
+        val usersFactory = UserProxiesFactory(tasksFactory, productsFactory, teamsFactory) { publishedEvents += it }
         val timestamp = now()
-        val user = newUser { timestamp }
-        val anotherUser = newUser { timestamp }
-        val eventIsPublished = async(start = CoroutineStart.UNDISPATCHED) { events.filterIsInstance<UserWasRemovedFromContainer>().first() }
+        val user = usersFactory.create(Id.create()) { timestamp }
         val team = user.createTeam()
-        user.add(anotherUser, team)
 
-        anotherUser.remove(user, team)
+        val result = runCatching { user.remove(user, team) }
 
-        assertThat(team.membersIds.toSet()).containsOnly(anotherUser.id)
-        eventIsPublished.await(timeout).let { publishedEvent ->
-            assertThat(publishedEvent.userId).isEqualTo(user.id)
-            assertThat(publishedEvent.container).isEqualTo(team)
-            assertThat(publishedEvent.actorId).isEqualTo(anotherUser.id)
-            assertThat(publishedEvent.timestamp).isEqualTo(timestamp)
-        }
+        assertThat(result.exceptionOrNull()).isNotNull().isInstanceOf(IllegalStateException::class)
+        assertThat(team.membersIds.toSet()).containsOnly(user.id)
+        assertThat(publishedEvents.filterIsInstance<UserWasRemovedFromContainer>()).isEmpty()
     }
 
     private val timeout = Duration.ofSeconds(5)
     private val eventStore = InMemoryEventsStore<Event>()
     private val events = eventStore.events
-    private val usersFactory = UserProxiesFactory(InMemoryTasksFactory(), InMemoryProductsFactory(), InMemoryTeamsFactory(), eventStore)
+    private val tasksFactory = InMemoryTasksFactory()
+    private val productsFactory = InMemoryProductsFactory()
+    private val teamsFactory = InMemoryTeamsFactory()
+    private val usersFactory = UserProxiesFactory(tasksFactory, productsFactory, teamsFactory, eventStore::publish)
 
     private suspend fun newUser(id: Id = Id.create(), time: TimeProvider = DefaultTimeProvider): User = usersFactory.create(id, time)
 }

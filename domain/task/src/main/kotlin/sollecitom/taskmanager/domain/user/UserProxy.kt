@@ -30,7 +30,7 @@ internal class UserProxy(override val id: Id, private val time: TimeProvider, pr
 
     override suspend fun remove(task: Task, container: TasksContainer) = container.removeTask(task).also { publishEvent(TaskWasRemovedFromContainer(task, container, getTime())) }
 
-    override suspend fun createTeam(teamId: Id): Team = teamsFactory.create(teamId, id, getTime()).also { publishEvent(TeamWasCreated(it, getTime())) }
+    override suspend fun createTeam(teamId: Id): Team = teamsFactory.create(teamId, id, getTime()).also { it.addMemberId(id) }.also { publishEvent(TeamWasCreated(it, getTime())) }
 
     override suspend fun add(user: User, container: MembersContainer) = container.addMemberId(user.id).also { publishEvent(UserWasAddedToContainer(user.id, container, id, getTime())) }
 

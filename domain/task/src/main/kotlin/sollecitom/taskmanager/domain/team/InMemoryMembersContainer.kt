@@ -9,12 +9,12 @@ class InMemoryMembersContainer : MembersContainer {
     private val _membersIds = mutableSetOf<Id>()
     override val membersIds: Flow<Id> get() = _membersIds.asFlow()
 
-    override fun addMemberId(memberId: Id) {
+    override suspend fun addMemberId(memberId: Id) {
 
         _membersIds += memberId
     }
 
-    override fun removeMemberId(memberId: Id) {
+    override suspend fun removeMemberId(memberId: Id) {
 
         _membersIds -= memberId
     }
